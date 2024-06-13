@@ -1,3 +1,5 @@
+
+
 const Board = (function() {
     let size = 3;
     const board = [];
@@ -24,16 +26,10 @@ const Board = (function() {
     return {board, clearboard, setSize, getSize};
 })();
 
-let arr = [""];
-let x = 0;
-console.log(arr[0]);
-console.log(x);
 console.log(Board.board);
 
-arr[0] = "x";
-x = 1;
+
 Board.board[0][0] = "x";
 
-console.log(arr[0])
-console.log(x)
 console.log(Board.board)
+
