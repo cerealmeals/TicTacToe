@@ -3,7 +3,6 @@
 const Board = (function() {
     let size = 3; // number of rows and columns on the board
     const board = []; // stores the values in the board
-    makeBoard(); // make an initial board
 
     // make the inital array with no characters
     const makeBoard = function (){
@@ -34,15 +33,20 @@ const Board = (function() {
 const display = (function(){
 
     // creates the elements to display the board to the screen
-    const createBoard = function (){
+    const makeBoard = function (){
         const root = document.querySelector(".board");
         for (let i = 0; i < Board.getSize()**2; i++){
             const square = document.createElement("div");
+            square.setAttribute("id", i.toString())
             square.classList.add("square");
-            square.addEventListener("click", function(){
-                square.textContent = Logic.place();
-                Logic
-                Logic.checkWinner(Board);
+            square.addEventListener("click", function(e){
+                if (Logic.getWon() == false){   
+                    let symbol = Logic.place();
+                    square.textContent = symbol;
+                    let id = Number(e.target.id);
+                    Board.board[id] = symbol;
+                    Logic.checkWinner(id);
+                }
             })
             square.textContent = Board.board[i];
             root.appendChild(square);
@@ -50,15 +54,15 @@ const display = (function(){
     }
 
     // clear the elements on the screen to make a new board
-    const clearboard = function (){
+    const clearBoard = function (){
 
     }
-    return {createBoard, clearboard}
+    return {makeBoard, clearBoard}
 })();
 
 const Logic = (function(){
     let Xturn = true; //on true it is X's turn on false it is O's turn 
-
+    let won = false;
     //getting for who's turn it is, returns a string either X or O
     const getTurn = function(){
         if(Xturn){
@@ -71,22 +75,45 @@ const Logic = (function(){
 
     // returns the turn and swaps who's turn it is
     const place = function (){
+        const turn = document.querySelector(".turn");
         if(Xturn){
+            turn.textContent = "O's turn";
             Xturn = false;
             return "X";
         }
         else{
+            turn.textContent = "X's turn";
             Xturn = true;
             return "O";
         }
     }
 
     // checks if the current board stat has a winner
-    const checkWinner = function(){
-        console.log("no logic implemented");
+    const checkWinner = function(location_changed){
+        let i = 0;
+        let size = Board.getSize();
+        let currently_checking = location_changed;
+        let symbol = Board.board[location_changed];
+        let flag = true;
+        //checking if row is a win
+        while (i < size && flag){
+            currently_checking = (currently_checking + 1) % (size**2);
+            console.log(currently_checking);
+            if(Board.board[currently_checking] != symbol){
+                flag = false;
+            }
+            i++
+        }
+        if(i == size - 1){
+            console.log("The Winner is " + symbol);
+        }
     }
-    return {getTurn, checkWinner, place}
+
+    // getter for won variable
+    const getWon = () => won;
+    return {getTurn, getWon, checkWinner, place}
 })();
 
+Board.makeBoard();
+display.makeBoard();
 
-console.log(Board.board);
