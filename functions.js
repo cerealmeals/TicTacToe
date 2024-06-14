@@ -1,3 +1,5 @@
+
+
 const Board = (function() {
     let size = 3; // number of rows and columns on the board
     const board = []; // stores the values in the board
