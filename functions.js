@@ -32,6 +32,8 @@ const Board = (function() {
 
 const display = (function(){
 
+    
+
     // creates the elements to display the board to the screen
     const makeBoard = function (){
         const root = document.querySelector(".board");
@@ -57,7 +59,8 @@ const display = (function(){
 
     // clear the elements on the screen to make a new board
     const clearBoard = function (){
-
+        const squares = document.querySelectorAll(".square");
+        squares.forEach((square) => square.textContent = "");
     }
     return {makeBoard, clearBoard}
 })();
@@ -193,6 +196,27 @@ const Logic = (function(){
     const getWon = () => won;
     return {getTurn, getWon, checkWinner, place}
 })();
+
+
+// set up the button that resets the size of the board
+const setSize = document.querySelector("form button")
+setSize.addEventListener("submit", function(e){
+    if(e.preventDefault){
+        e.preventDefault();
+    }
+
+    Board.setSize(document.getElementById("size").value);
+    display.makeBoard();
+
+});
+
+// button that clears the board
+const clear = document.querySelector(".info.clear");
+clear.addEventListener("click", function(){
+    Board.clearboard();
+    display.clearBoard()
+});
+
 
 Board.makeBoard();
 display.makeBoard();
