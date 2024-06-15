@@ -35,6 +35,8 @@ const display = (function(){
     // creates the elements to display the board to the screen
     const makeBoard = function (){
         const root = document.querySelector(".board");
+        root.style["grid-template-columns"] = "repeat(" + Board.getSize().toString() + ", 100px)";
+        root.style["grid-template-rows"] = "repeat(" + Board.getSize().toString() + ", 100px)";
         for (let i = 0; i < Board.getSize()**2; i++){
             const square = document.createElement("div");
             square.setAttribute("id", i.toString())
@@ -97,16 +99,94 @@ const Logic = (function(){
         let flag = true;
         //checking if row is a win
         while (i < size && flag){
-            currently_checking = (currently_checking + 1) % (size**2);
-            console.log(currently_checking);
+            currently_checking++;
+            if((currently_checking % size) == (0)){
+                currently_checking = currently_checking - size;
+            }
             if(Board.board[currently_checking] != symbol){
                 flag = false;
             }
-            i++
+            else{
+                i++
+            }
         }
-        if(i == size - 1){
-            console.log("The Winner is " + symbol);
+        if(i == size){
+            const turn = document.querySelector(".turn");
+            turn.textContent = ("The Winner is " + symbol);
+            won = true;
+            return;
         }
+
+        currently_checking = location_changed;
+        flag = true;
+        i = 0;
+        //checking if column is true
+        while(i < size && flag){
+            currently_checking = (currently_checking + size)% size**2;
+            if(Board.board[currently_checking] != symbol){
+                flag = false;
+            }
+            else{
+                i++
+            }
+        }
+        if(i == size){
+            const turn = document.querySelector(".turn");
+            turn.textContent = ("The Winner is " + symbol);
+            won = true;
+            return;
+        }
+
+        currently_checking = location_changed;
+        flag = true;
+        i = 0;
+        // Check diagonal top left to bottom right
+        if(currently_checking % (size +1) == 0){
+            while(i < size && flag){
+                currently_checking += size + 1;
+                if(currently_checking > (size**2)-1){
+                    currently_checking = 0;
+                }
+                if(Board.board[currently_checking] != symbol){
+                    flag = false;
+                }
+                else{
+                    i++
+                }
+            }
+            if(i == size){
+                const turn = document.querySelector(".turn");
+                turn.textContent = ("The Winner is " + symbol);
+                won = true;
+                return;
+            } 
+        }
+
+        currently_checking = location_changed;
+        flag = true;
+        i = 0;
+        // Check diagonal top right to bottom left
+        if((currently_checking % (size -1) == 0)&& currently_checking != 0){
+            while(i < size && flag){
+                currently_checking += size - 1;
+                if(currently_checking > (size**2)-size){
+                    currently_checking = size - 1;
+                }
+                if(Board.board[currently_checking] != symbol){
+                    flag = false;
+                }
+                else{
+                    i++
+                }
+            }
+            if(i == size){
+                const turn = document.querySelector(".turn");
+                turn.textContent = ("The Winner is " + symbol);
+                won = true;
+                return;
+            }
+        }
+
     }
 
     // getter for won variable
