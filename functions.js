@@ -32,7 +32,24 @@ const Board = (function() {
 
 const display = (function(){
 
-    
+// set up the button that resets the size of the board
+const setSize = document.querySelector("form")
+setSize.addEventListener("submit", function(e){
+    if(e.preventDefault){
+        e.preventDefault();
+    }
+    console.log("check");
+    Board.setSize(document.getElementById("size").value);
+    display.makeBoard();
+
+});
+
+// button that clears the board
+const clear = document.querySelector(".clear");
+clear.addEventListener("click", function(){
+    Board.clearboard();
+    display.clearBoard();
+});
 
     // creates the elements to display the board to the screen
     const makeBoard = function (){
@@ -198,24 +215,7 @@ const Logic = (function(){
 })();
 
 
-// set up the button that resets the size of the board
-const setSize = document.querySelector("form button")
-setSize.addEventListener("submit", function(e){
-    if(e.preventDefault){
-        e.preventDefault();
-    }
 
-    Board.setSize(document.getElementById("size").value);
-    display.makeBoard();
-
-});
-
-// button that clears the board
-const clear = document.querySelector(".info.clear");
-clear.addEventListener("click", function(){
-    Board.clearboard();
-    display.clearBoard()
-});
 
 
 Board.makeBoard();
