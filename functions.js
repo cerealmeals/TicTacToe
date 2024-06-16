@@ -48,7 +48,7 @@ setSize.addEventListener("submit", function(e){
 const clear = document.querySelector(".clear");
 clear.addEventListener("click", function(){
     Board.clearboard();
-    display.clearBoard();
+    display.clearSymbols();
 });
 
     // creates the elements to display the board to the screen
@@ -75,11 +75,16 @@ clear.addEventListener("click", function(){
     }
 
     // clear the elements on the screen to make a new board
-    const clearBoard = function (){
+    const clearSymbols = function (){
         const squares = document.querySelectorAll(".square");
         squares.forEach((square) => square.textContent = "");
     }
-    return {makeBoard, clearBoard}
+
+    const clearBoard = function(){
+        const root = document.querySelector(".board");
+        
+    }
+    return {makeBoard, clearBoard, clearSymbols}
 })();
 
 const Logic = (function(){
