@@ -21,6 +21,10 @@ body{
     align-items: center;
 }
 
+.square:hover{
+    background-color: rgb(219, 219, 252);
+}
+
 .info{
     display: flex;
     flex-direction: column;

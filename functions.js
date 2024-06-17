@@ -2,7 +2,7 @@
 
 const Board = (function() {
     let size = 3; // number of rows and columns on the board
-    const board = []; // stores the values in the board
+    let board = []; // stores the values in the board
 
     // make the inital array with no characters
     const makeBoard = function (){
@@ -20,8 +20,10 @@ const Board = (function() {
 
     // set a new size for a new game
     const setSize = function(n){
-        board.splice(0, board.length);
-        size = n;
+        for (let i = 0; i < size; i++){
+            board.pop();
+        }
+        size = Number(n);
         makeBoard();
     }
 
@@ -38,10 +40,12 @@ setSize.addEventListener("submit", function(e){
     if(e.preventDefault){
         e.preventDefault();
     }
-    console.log("check");
-    Board.setSize(document.getElementById("size").value);
-    display.makeBoard();
 
+    Board.setSize(document.getElementById("size").value);
+    display.clearBoard();
+    display.makeBoard();
+    display.clearSymbols();
+    Logic.resetGame();
 });
 
 // button that clears the board
@@ -49,6 +53,7 @@ const clear = document.querySelector(".clear");
 clear.addEventListener("click", function(){
     Board.clearboard();
     display.clearSymbols();
+    Logic.resetGame();
 });
 
     // creates the elements to display the board to the screen
@@ -61,7 +66,7 @@ clear.addEventListener("click", function(){
             square.setAttribute("id", i.toString())
             square.classList.add("square");
             square.addEventListener("click", function(e){
-                if (Logic.getWon() == false){   
+                if ((Logic.getWon() == false) && (square.textContent == "")){   
                     let symbol = Logic.place();
                     square.textContent = symbol;
                     let id = Number(e.target.id);
@@ -82,7 +87,7 @@ clear.addEventListener("click", function(){
 
     const clearBoard = function(){
         const root = document.querySelector(".board");
-        
+        root.replaceChildren();
     }
     return {makeBoard, clearBoard, clearSymbols}
 })();
@@ -116,6 +121,8 @@ const Logic = (function(){
     }
 
     // checks if the current board stat has a winner
+    // location_changed is the index of the board array that has just been changed
+    // returns nothing
     const checkWinner = function(location_changed){
         let i = 0;
         let size = Board.getSize();
@@ -139,6 +146,7 @@ const Logic = (function(){
             const turn = document.querySelector(".turn");
             turn.textContent = ("The Winner is " + symbol);
             won = true;
+            console.log("row");
             return;
         }
 
@@ -159,6 +167,7 @@ const Logic = (function(){
             const turn = document.querySelector(".turn");
             turn.textContent = ("The Winner is " + symbol);
             won = true;
+            console.log("column");
             return;
         }
 
@@ -168,7 +177,7 @@ const Logic = (function(){
         // Check diagonal top left to bottom right
         if(currently_checking % (size +1) == 0){
             while(i < size && flag){
-                currently_checking += size + 1;
+                currently_checking = currently_checking + size + 1;
                 if(currently_checking > (size**2)-1){
                     currently_checking = 0;
                 }
@@ -183,6 +192,7 @@ const Logic = (function(){
                 const turn = document.querySelector(".turn");
                 turn.textContent = ("The Winner is " + symbol);
                 won = true;
+                console.log("top left to bottum right");
                 return;
             } 
         }
@@ -193,7 +203,7 @@ const Logic = (function(){
         // Check diagonal top right to bottom left
         if((currently_checking % (size -1) == 0)&& currently_checking != 0){
             while(i < size && flag){
-                currently_checking += size - 1;
+                currently_checking = currently_checking + size - 1;
                 if(currently_checking > (size**2)-size){
                     currently_checking = size - 1;
                 }
@@ -208,15 +218,23 @@ const Logic = (function(){
                 const turn = document.querySelector(".turn");
                 turn.textContent = ("The Winner is " + symbol);
                 won = true;
+                console.log("top right to bottom left");
                 return;
             }
         }
 
     }
 
+    // reset the win variable
+    const resetGame = function (){
+        won = false;
+        const turn = document.querySelector(".turn");
+        turn.textContent = (Logic.getTurn() + "'s turn");
+    }
+
     // getter for won variable
     const getWon = () => won;
-    return {getTurn, getWon, checkWinner, place}
+    return {getTurn, getWon, checkWinner, place, resetGame}
 })();
 
 
